@@ -1,0 +1,43 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+FLAGS	Makefile	/^FLAGS= -std=c++11 -Wall -Werror -Wextra$/;"	m
+INC	Makefile	/^INC= $(addprefix $(INC_PATH), $(INCLUDES))$/;"	m
+INCLUDES	Makefile	/^INCLUDES= runner.h$/;"	m
+INC_PATH	Makefile	/^INC_PATH= .\/includes\/$/;"	m
+LINUX_SDL	Makefile	/^LINUX_SDL= -Wl,-rpath=\/usr\/local\/lib -lSDL2 -lSDL2_image -lSDL2_mixer$/;"	m
+MAC_SDL	Makefile	/^MAC_SDL= -I $(shell sdl2-config --cflags) $(shell sdl2-config --libs) -lSDL2_ttf -lSDL2_image -lSDL2_mixer$/;"	m
+NAME	Makefile	/^NAME= runner$/;"	m
+OBJ	Makefile	/^OBJ= $(addprefix $(OBJ_PATH), $(OBJECTS))$/;"	m
+OBJECTS	Makefile	/^OBJECTS= $(SOURCES:.cpp=.o)$/;"	m
+OBJ_PATH	Makefile	/^OBJ_PATH= .\/obj\/$/;"	m
+RUNNER_H	includes/runner.h	/^# define RUNNER_H$/;"	d
+SDL_apply_color_to_renderer	src/sdl_functions.cpp	/^void			SDL_apply_color_to_renderer(SDL_Color rgba, t_sdl *sdl)$/;"	f
+SDL_clean_struct	src/sdl_functions.cpp	/^void			SDL_clean_struct(t_sdl *sdl)$/;"	f
+SDL_create_texture	src/sdl_functions.cpp	/^SDL_Texture		*SDL_create_texture(t_sdl *sdl, SDL_Texture *texture, int width,$/;"	f
+SDL_get_desktop_display_mode	src/sdl_functions.cpp	/^void			SDL_get_desktop_display_mode(t_sdl *sdl, int option,$/;"	f
+SDL_init_audio	src/sdl_functions.cpp	/^void			SDL_init_audio(void)$/;"	f
+SDL_init_img	src/sdl_functions.cpp	/^void			SDL_init_img(void)$/;"	f
+SDL_init_renderer	src/sdl_functions.cpp	/^void			SDL_init_renderer(t_sdl *sdl)$/;"	f
+SDL_init_struct	src/sdl_functions.cpp	/^void			SDL_init_struct(t_sdl *sdl)$/;"	f
+SDL_init_window	src/sdl_functions.cpp	/^void			SDL_init_window(t_sdl *sdl)$/;"	f
+SDL_load_texture	src/sdl_functions.cpp	/^SDL_Texture		*SDL_load_texture(t_sdl *sdl, SDL_Renderer *renderer,$/;"	f
+SDL_query_texture	src/sdl_functions.cpp	/^void			SDL_query_texture(t_sdl *sdl, sdl_texture *texture, uint32 *format,$/;"	f
+SDL_render_clear	src/sdl_functions.cpp	/^void			SDL_render_clear(t_sdl *sdl, SDL_Renderer *renderer)$/;"	f
+SDL_render_copy	src/sdl_functions.cpp	/^void			SDL_render_copy(t_sdl *sdl, SDL_Renderer *renderer,$/;"	f
+SDL_render_target	src/sdl_functions.cpp	/^void			SDL_render_target(t_sdl *sdl, SDL_Renderer *renderer,$/;"	f
+SOURCES	Makefile	/^SOURCES= main.cpp \\$/;"	m
+SRC	Makefile	/^SRC= $(addprefix $(SRC_PATH), $(SOURCES))$/;"	m
+SRC_PATH	Makefile	/^SRC_PATH= .\/src\/$/;"	m
+disp	includes/runner.h	/^			SDL_Rect		disp;$/;"	m	struct:s_sdl
+display	includes/runner.h	/^			SDL_DisplayMode	display;$/;"	m	struct:s_sdl
+failure_exit_program	src/sdl_functions.cpp	/^void			failure_exit_program(string error, t_sdl *sdl)$/;"	f
+main	src/main.cpp	/^int		main()$/;"	f
+renderer	includes/runner.h	/^			SDL_Renderer	*renderer;$/;"	m	struct:s_sdl
+runner_loop	src/main.cpp	/^void	runner_loop(t_sdl *sdl, const Uint8 *state)$/;"	f
+s_sdl	includes/runner.h	/^typedef struct		s_sdl$/;"	s
+t_sdl	includes/runner.h	/^}					t_sdl;$/;"	t	typeref:struct:s_sdl
+window	includes/runner.h	/^			SDL_Window		*window;$/;"	m	struct:s_sdl
