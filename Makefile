@@ -7,9 +7,13 @@ INC_PATH= ./includes/
 SOURCES= main.cpp \
 		 sdl_functions.cpp\
 		 Background.cpp\
-		 Player.cpp
+		 Player.cpp \
+		 Platform.cpp
 
-INCLUDES= runner.h
+INCLUDES= runner.h \
+		  Background.h \
+		  Player.h \
+		  Platform.h
 
 OBJECTS= $(SOURCES:.cpp=.o)
 

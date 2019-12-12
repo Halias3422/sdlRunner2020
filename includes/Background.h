@@ -15,7 +15,7 @@ class Background
 	~Background();
 
 	private:
-	SDL_Texture	*texture;
+	SDL_Texture	*texture = NULL;
 	SDL_Rect	src;
 	SDL_Rect	dst;
 	SDL_Rect	tmp_src;

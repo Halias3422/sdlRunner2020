@@ -9,6 +9,15 @@
 #include "SDL_mixer.h"
 #include "Background.h"
 #include "Player.h"
+#include "Platform.h"
+#include <list>
+#include <ctime>
+
+static int	PLAYER_SPEED = 3;
+static int	BACKGROUND_SPEED = 0;
+static int	LVL_SPEED = 1;
+static int	PLAYER_VSPEED = -15;
+static int	NB_OBJ = 3;
 
 // STRUCT
 
@@ -21,6 +30,8 @@ typedef struct		s_sdl
 			SDL_Texture		*buffer;
 			SDL_Rect		buffer_rect;
 }					t_sdl;
+
+
 
 // FUNCTIONS
 

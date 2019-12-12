@@ -32,7 +32,7 @@ void Background::fillbuffer(t_sdl *sdl)
 		dst.w = 720;
 		src.x = 0;
 	}
-	src.x += 100;
+	src.x += BACKGROUND_SPEED;
 }
 
 Background::~Background()
