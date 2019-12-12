@@ -70,7 +70,9 @@ void	create_lvl(t_sdl *sdl, list <t_obstacle> *platform, Platform obj_list[3])
 	}
 	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 4, 395);
 	platform->push_back(new_obj);
-	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 2, 400);
+	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 2, 350);
+	platform->push_back(new_obj);
+	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 7, 440);
 	platform->push_back(new_obj);
 
 }
@@ -87,11 +89,10 @@ void	runner_loop(t_sdl *sdl, const Uint8 *state)
 	sdl->buffer = SDL_create_texture(sdl, sdl->buffer, 720, 480);
 	sdl->buffer_rect = {0, 0, 720, 480};
 	Background background(sdl, "img/background.png");
-	Player player(sdl, "img/runner.png");
+	Player player(sdl, "img/runnerdebug.png");
 	create_lvl(sdl, &platform, obj_list);
 	while (1)
 	{
-
 		state = SDL_GetKeyboardState(NULL);
 		SDL_PumpEvents();
 		if (state[SDL_SCANCODE_A])
@@ -120,16 +121,72 @@ void	runner_loop(t_sdl *sdl, const Uint8 *state)
 	}
 }
 
+void	print_menu(t_sdl *sdl, int menu, SDL_Texture *img_menu, SDL_Texture *img_arrow)
+{
+	SDL_Rect	dst;
+	SDL_Rect	menu_dst;
+
+	SDL_render_clear(sdl, sdl->renderer);
+//	SDL_render_target(sdl, sdl->renderer, sdl->buffer);
+//	SDL_render_clear(sdl, sdl->renderer);
+
+	menu_dst = {0, 0, 0, 0};
+	SDL_query_texture(sdl, img_menu, NULL, NULL, &menu_dst.w, &menu_dst.h);
+
+	if (menu == 0)
+		dst = {261, 214, 0, 0};
+	if (menu == 1)
+		dst = {221, 293, 0, 0};
+	if (menu == 2)
+		dst = {257, 379, 0, 0};
+	SDL_render_copy(sdl, sdl->renderer, img_menu, NULL, &menu_dst);
+	SDL_query_texture(sdl, img_arrow, NULL, NULL, &dst.w, &dst.h);
+	SDL_render_copy(sdl, sdl->renderer, img_arrow, NULL, &dst);
+//	SDL_render_target(sdl, sdl->renderer, NULL);
+//	SDL_render_copy(sdl, sdl->renderer, sdl->buffer, NULL, &sdl->disp);
+	SDL_RenderPresent(sdl->renderer);
+}
+
 int		main()
 {
 	t_sdl		sdl;
 	const Uint8	*state;
+	int			menu(0);
+	SDL_Texture	*img_menu(nullptr), *img_arrow(nullptr);
 
 	SDL_init_struct(&sdl);
 	SDL_init_window(&sdl);
 	SDL_init_renderer(&sdl);
 	SDL_init_img();
-	runner_loop(&sdl, state);
+	img_menu = SDL_load_texture(&sdl, sdl.renderer, img_menu, "img/menu.png");
+	img_arrow = SDL_load_texture(&sdl, sdl.renderer, img_arrow, "img/menu_arrow.png");
+	while (1)
+	{
+		state = SDL_GetKeyboardState(NULL);
+		SDL_PumpEvents();
+		if (state[SDL_SCANCODE_RETURN])
+		{
+			if (menu == 0)
+				runner_loop(&sdl, state);
+			if (menu == 1)
+				runner_loop(&sdl, state);
+			if (menu == 2)
+				break ;
+		}
+		if (state[SDL_SCANCODE_UP])
+		{
+			menu -= menu == 0 ? 0 : 1;
+			SDL_Delay(100);
+		}
+		if (state[SDL_SCANCODE_DOWN])
+		{
+			menu += menu == 2 ? 0 : 1;
+			SDL_Delay(100);
+		}
+		print_menu(&sdl, menu, img_menu, img_arrow);
+	}
+	SDL_DestroyTexture(img_menu);
+	SDL_DestroyTexture(img_arrow);
 	SDL_clean_struct(&sdl);
 	return (0);
 }

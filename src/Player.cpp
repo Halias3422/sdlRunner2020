@@ -104,7 +104,7 @@ void	Player::horizontal_move(int way, list <t_obstacle> *platform)
 	for (i = platform->begin(); i != platform->end(); i++)
 	{
 		plat_dst = i->dst;
-		if ((dst.y < plat_dst.y + plat_dst.h && dst.y > plat_dst.y) ||
+		if ((dst.y < plat_dst.y && dst.y + dst.h > plat_dst.y) || (dst.y < plat_dst.y + plat_dst.h && dst.y > plat_dst.y) ||
 			(dst.y + dst.h > plat_dst.y && dst.y + dst.h < plat_dst.y + plat_dst.h)) //if control pb vertical
 		{
 			if (dst.x > plat_dst.x && dst.x < plat_dst.x + plat_dst.w) //if control gauche joueur
@@ -137,7 +137,7 @@ void	Player::vertical_move(list <t_obstacle> *platform)
 	for (i = platform->begin(); i != platform->end(); i++)
 	{
 		plat_dst = i->dst;
-		if ((dst.x < plat_dst.x + plat_dst.w && dst.x > plat_dst.x) ||
+		if ((dst.x < plat_dst.x && dst.x + dst.w > plat_dst.x) || (dst.x < plat_dst.x + plat_dst.w && dst.x > plat_dst.x) ||
 			(dst.x + dst.w > plat_dst.x && dst.x + dst.w < plat_dst.x + plat_dst.w)) //if control pb vertical
 		{
 			if (dst.y >= plat_dst.y && dst.y <= plat_dst.y + plat_dst.h && ++check) //if control gauche joueur
