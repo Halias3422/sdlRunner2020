@@ -14,7 +14,7 @@
 #include <ctime>
 
 static int	PLAYER_SPEED = 3;
-static int	BACKGROUND_SPEED = 0;
+static int	BACKGROUND_SPEED = 1;
 static int	LVL_SPEED = 1;
 static int	PLAYER_VSPEED = -15;
 static int	NB_OBJ = 3;

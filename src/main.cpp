@@ -77,10 +77,44 @@ void	create_lvl(t_sdl *sdl, list <t_obstacle> *platform, Platform obj_list[3])
 
 }
 
+void	maintain_obstacles_progression(Platform obj_list[3],
+		list <t_obstacle> *platform)
+{
+	list <t_obstacle>::iterator begin = platform->begin();
+	list <t_obstacle>::iterator end = platform->end();
+	t_obstacle new_plat;
+	int	visible;
+	int	altitude;
+
+	end--;
+	cout << "//// end nb = " << end->nb_obstacle << " // x = " << end->dst.x << "  , y = " << end->dst.y << ", w = " << end->dst.w << ", h = " << end->dst.h << endl;
+	srand(time(NULL));
+	visible = rand() % 100 < 90 ? 1 : 0;
+	altitude = (((end->dst.y - 130) - 65)) + rand() % (461 - (((end->dst.y - 130) - 65)));
+//	altitude = rand() % 460 + (end->dst.y - 130);
+//	altitude = ((rand() % 100) * 395 / 100) + 65;
+	cout << "altitude = " << altitude << endl;
+	if (altitude < 65)
+		altitude = 65;
+
+	if (platform && begin->dst.x + begin->dst.w < 0)
+	{
+		cout << "JE RENTRE DEDANS nb_obst = " << begin->nb_obstacle << endl;
+		platform->erase(begin);
+		fill_obstacle(&new_plat, obj_list, 0, visible, end->dst.x + end->dst.w, altitude);
+		cout << "end nb = " << end->nb_obstacle << " // x = " << end->dst.x << "  , y = " << end->dst.y << ", w = " << end->dst.w << ", h = " << end->dst.h << endl;
+		cout << "nouvel objet en x = " << end->dst.x + end->dst.w << "(" << end->dst.x << " + " << end->dst.w << ") // altitude = " << altitude << endl;
+		platform->push_back(new_plat);
+	}
+	for (begin = platform->begin(); begin != platform->end(); begin++)
+		begin->dst.x -= BACKGROUND_SPEED;
+}
+
 void	runner_loop(t_sdl *sdl, const Uint8 *state)
 {
 	Uint32		last_frame(0), current_frame(0);
 	list		<t_obstacle> platform;
+	int			lvl_cap_speed(20);
 
 	Platform obj_list[3];
 	obj_list[0].create_platform(sdl, "img/ground0.png");
@@ -111,12 +145,18 @@ void	runner_loop(t_sdl *sdl, const Uint8 *state)
 			player.jump(0);
 		if (state[SDL_SCANCODE_ESCAPE] || player.is_alive() == false)
 			break ;
+		if (TOT_OBJ > lvl_cap_speed)
+		{
+			BACKGROUND_SPEED += 1;
+			lvl_cap_speed += 20;
+		}
 		if (no_key(state) == 0 || (state[SDL_SCANCODE_A] && state[SDL_SCANCODE_D]))
 			player.idle();
 		current_frame = SDL_GetTicks();
 		if (last_frame + 16 >= current_frame)
 			SDL_Delay(last_frame + 16 - current_frame);
 		last_frame = current_frame;
+		maintain_obstacles_progression(obj_list, &platform);
 		print_runner(sdl, &background, &player, &platform);
 	}
 }
@@ -172,6 +212,8 @@ int		main()
 				runner_loop(&sdl, state);
 			if (menu == 2)
 				break ;
+			TOT_OBJ = 0;
+			BACKGROUND_SPEED = 1;
 		}
 		if (state[SDL_SCANCODE_UP])
 		{

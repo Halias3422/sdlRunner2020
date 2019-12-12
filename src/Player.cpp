@@ -113,6 +113,7 @@ void	Player::horizontal_move(int way, list <t_obstacle> *platform)
 			}
 			if (dst.x + dst.w > plat_dst.x && dst.x + dst.w < plat_dst.x + plat_dst.w) //if control droite joueur
 			{
+				cout << "je trigger la deuxieme collision" << endl;
 				dst.x = plat_dst.x - dst.w;
 			}
 		}
@@ -155,6 +156,8 @@ void	Player::vertical_move(list <t_obstacle> *platform)
 	}
 	if (check == 0)
 		grounded = false;
+	if (dst.y > 480)
+		life -= 1;
 }
 
 void	Player::left()
