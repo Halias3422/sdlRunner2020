@@ -11,7 +11,7 @@ Background::Background(t_sdl *sdl, string path)
 	tmp_dst = {0, 0, 720, 480};
 }
 
-void Background::fillbuffer(t_sdl *sdl)
+void Background::fillbuffer(t_sdl *sdl, string type)
 {
 	int		delta(0);
 
@@ -32,7 +32,26 @@ void Background::fillbuffer(t_sdl *sdl)
 		dst.w = 720;
 		src.x = 0;
 	}
-	src.x += BACKGROUND_SPEED;
+	if (type == "background")
+	{
+		if (wait == 4)
+		{
+			wait = 0;
+			src.x += BACKGROUND_SPEED;
+		}
+		else
+			wait++;
+	}
+	if (type == "front_background")
+	{
+		if (wait == 3)
+		{
+			wait = 0;
+			src.x += FRONT_BACKGROUND_SPEED;
+		}
+		else
+			wait++;
+	}
 }
 
 Background::~Background()

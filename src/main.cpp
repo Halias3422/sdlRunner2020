@@ -2,34 +2,14 @@
 
 using namespace std;
 
+int		PLAYER_SPEED = 2;
+int		BACKGROUND_SPEED = 1;
+int		FRONT_BACKGROUND_SPEED = 2;
+int		LVL_SPEED = 1;
+int		PLAYER_VSPEED = -16;
 int		TOT_OBJ = 0;
-
-void	print_obstacle(t_sdl *sdl, list <t_obstacle> *platform)
-{
-	list <t_obstacle>::iterator i;
-
-	for (i = platform->begin(); i != platform->end(); i++)
-		SDL_render_copy(sdl, sdl->renderer, i->texture, NULL, &i->dst);
-}
-
-void	print_runner(t_sdl *sdl, Background *background, Player *player, list <t_obstacle> *platform)
-{
-	(void)platform;
-	SDL_render_clear(sdl, sdl->renderer);
-//	SDL_render_target(sdl, sdl->renderer, sdl->buffer);
-//	SDL_render_clear(sdl, sdl->renderer);
-	
-	background->fillbuffer(sdl);
-//	player->check_collisions(platform);
-	player->vertical_move(platform);
-	player->horizontal_move(0, platform);
-	player->fill_buffer(sdl);
-	print_obstacle(sdl, platform);
-	
-//	SDL_render_target(sdl, sdl->renderer, NULL);
-//	SDL_render_copy(sdl, sdl->renderer, sdl->buffer, NULL, &sdl->disp);
-	SDL_RenderPresent(sdl->renderer);
-}
+int		NB_IMG = 4;
+int		OBJ_DESTROYED = 0;
 
 int		no_key(const Uint8 *state)
 {
@@ -38,153 +18,174 @@ int		no_key(const Uint8 *state)
 	return (0);
 }
 
-void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[3], int type, int box_collide, int dst_x, int dst_y)
+void	create_score_textures(t_sdl *sdl, vector <SDL_Texture*> *score_texture)
 {
-	new_obj->type = type;
-	new_obj->nb_obstacle = TOT_OBJ++;
-	new_obj->box_collide = box_collide;
-	new_obj->texture = obj_list[new_obj->type].get_texture();
-	new_obj->dst = obj_list[new_obj->type].get_dst();
-	new_obj->dst.x = dst_x;
-	new_obj->dst.y = dst_y;
+	SDL_Texture	*tmp = NULL;
+
+	for (int i = 0; i < 10; i++)
+	{
+		tmp = SDL_load_texture(sdl, sdl->renderer, tmp, "img/score" + to_string(i) + ".png");
+		score_texture->push_back(tmp);
+	}
 }
 
-void	create_lvl(t_sdl *sdl, list <t_obstacle> *platform, Platform obj_list[3])
+void	clear_all_texture(vector <t_obstacle> *platform, vector <SDL_Texture*> *score_texture)
 {
-	int			i = 0;
-	t_obstacle	new_obj;
+	SDL_Texture	*tmp;
+	t_obstacle	tmp_obs;
 
-	(void)obj_list;
-	(void)sdl;
-	(void)platform;
-	while (i < 8)
+	for (unsigned long i = 0; i < score_texture->size(); i++)
 	{
-		fill_obstacle(&new_obj, obj_list, 0, 1, 72 * i, 460);
-		platform->push_back(new_obj);
-		i++;
-		if (i == 8)
+		tmp = score_texture->at(i);
+		SDL_DestroyTexture(tmp);
+	}
+	for (unsigned long i = 0; i < platform->size(); i++)
+	{
+		tmp_obs = platform->at(i);
+		SDL_DestroyTexture(tmp_obs.texture);
+	}
+}
+
+void	game_paused()
+{
+	SDL_Event	event;
+
+	while (1)
+	{
+		if (SDL_PollEvent(&event) && event.type == SDL_KEYDOWN)
 		{
-			fill_obstacle(&new_obj, obj_list, 1, 1, 72 * i + 72, 350);
-			platform->push_back(new_obj);
+			if (event.key.keysym.sym == SDLK_RETURN)
+				break ;
 		}
 	}
-	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 4, 395);
-	platform->push_back(new_obj);
-	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 2, 350);
-	platform->push_back(new_obj);
-	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 7, 440);
-	platform->push_back(new_obj);
-
 }
 
-void	maintain_obstacles_progression(Platform obj_list[3],
-		list <t_obstacle> *platform)
-{
-	list <t_obstacle>::iterator begin = platform->begin();
-	list <t_obstacle>::iterator end = platform->end();
-	t_obstacle new_plat;
-	int	visible;
-	int	altitude;
-
-	end--;
-	cout << "//// end nb = " << end->nb_obstacle << " // x = " << end->dst.x << "  , y = " << end->dst.y << ", w = " << end->dst.w << ", h = " << end->dst.h << endl;
-	srand(time(NULL));
-	visible = rand() % 100 < 90 ? 1 : 0;
-	altitude = (((end->dst.y - 130) - 65)) + rand() % (461 - (((end->dst.y - 130) - 65)));
-//	altitude = rand() % 460 + (end->dst.y - 130);
-//	altitude = ((rand() % 100) * 395 / 100) + 65;
-	cout << "altitude = " << altitude << endl;
-	if (altitude < 65)
-		altitude = 65;
-
-	if (platform && begin->dst.x + begin->dst.w < 0)
-	{
-		cout << "JE RENTRE DEDANS nb_obst = " << begin->nb_obstacle << endl;
-		platform->erase(begin);
-		fill_obstacle(&new_plat, obj_list, 0, visible, end->dst.x + end->dst.w, altitude);
-		cout << "end nb = " << end->nb_obstacle << " // x = " << end->dst.x << "  , y = " << end->dst.y << ", w = " << end->dst.w << ", h = " << end->dst.h << endl;
-		cout << "nouvel objet en x = " << end->dst.x + end->dst.w << "(" << end->dst.x << " + " << end->dst.w << ") // altitude = " << altitude << endl;
-		platform->push_back(new_plat);
-	}
-	for (begin = platform->begin(); begin != platform->end(); begin++)
-		begin->dst.x -= BACKGROUND_SPEED;
-}
-
-void	runner_loop(t_sdl *sdl, const Uint8 *state)
+void	runner_loop(t_sdl *sdl, const Uint8 *state, Player *player, Player *player2)
 {
 	Uint32		last_frame(0), current_frame(0);
-	list		<t_obstacle> platform;
-	int			lvl_cap_speed(20);
+	vector		<t_obstacle> platform;
+	vector		<SDL_Texture*> score_texture;
+	int			lvl_cap_speed(100);
+	SDL_Event	event;
 
-	Platform obj_list[3];
+	PLAYER_SPEED = 2;
+	BACKGROUND_SPEED = 1;
+	FRONT_BACKGROUND_SPEED = 2;
+	LVL_SPEED = 1;
+	PLAYER_VSPEED = -16;
+	TOT_OBJ = 0;
+	OBJ_DESTROYED = 0;
+	player->set_life(10);
+	player2->set_life(10);
+	player->reset_dst();
+	player2->reset_dst();
+	cout << "joueur 1 = " << ((player->is_alive() == true) ? "VIVANT" : "MORT") << " // joueur 2 = " << ((player2->is_alive() == true) ? "VIVANT" : "MORT") << endl;
+	create_score_textures(sdl, &score_texture);
+	Platform obj_list[NB_IMG];
 	obj_list[0].create_platform(sdl, "img/ground0.png");
 	obj_list[1].create_platform(sdl, "img/ground1.png");
 	obj_list[2].create_platform(sdl, "img/ground2.png");
-	sdl->buffer = SDL_create_texture(sdl, sdl->buffer, 720, 480);
-	sdl->buffer_rect = {0, 0, 720, 480};
+	obj_list[3].create_platform(sdl, "img/ground3.png");
 	Background background(sdl, "img/background.png");
-	Player player(sdl, "img/runnerdebug.png");
+	Background front_background(sdl, "img/forest.png");
 	create_lvl(sdl, &platform, obj_list);
 	while (1)
 	{
 		state = SDL_GetKeyboardState(NULL);
 		SDL_PumpEvents();
+		if (SDL_PollEvent(&event) && event.type == SDL_KEYDOWN)
+		{
+			if (event.key.keysym.sym == SDLK_p)
+			{
+				if (BACKGROUND_SPEED < 10)
+				{
+					FRONT_BACKGROUND_SPEED += 1;
+					BACKGROUND_SPEED += 1;
+				}
+			}
+			if (event.key.keysym.sym == SDLK_o)
+			{
+				FRONT_BACKGROUND_SPEED = 0;
+				BACKGROUND_SPEED = 0;
+			}
+			if (event.key.keysym.sym == SDLK_l)
+				player->reborn();
+			if (event.key.keysym.sym == SDLK_i)
+			{
+				FRONT_BACKGROUND_SPEED = -1;
+				BACKGROUND_SPEED = -1;
+			}
+			if ((player->is_alive() == true || player2->is_alive() == true) && event.key.keysym.sym == SDLK_RETURN)
+				game_paused();
+		}
 		if (state[SDL_SCANCODE_A])
 		{
-			player.left();
-			player.horizontal_move(-1, &platform);
+			player->left();
+			player->horizontal_move(-1, &platform);
+		}
+		if (state[SDL_SCANCODE_LEFT])
+		{
+			player2->left();
+			player2->horizontal_move(-1, &platform);
 		}
 		if (state[SDL_SCANCODE_D])
 		{
-			player.right();
-			player.horizontal_move(1, &platform);
+			player->right();
+			player->horizontal_move(1, &platform);
+		}
+		if (state[SDL_SCANCODE_RIGHT])
+		{
+			player2->right();
+			player2->horizontal_move(1, &platform);
 		}
 		if (state[SDL_SCANCODE_SPACE])
-			player.jump(1);
+			player->jump(1);
 		else
-			player.jump(0);
-		if (state[SDL_SCANCODE_ESCAPE] || player.is_alive() == false)
+			player->jump(0);
+		if (state[SDL_SCANCODE_KP_0])
+			player2->jump(1);
+		else
+			player2->jump(0);
+		if (state[SDL_SCANCODE_ESCAPE])
 			break ;
-		if (TOT_OBJ > lvl_cap_speed)
+		if (player->is_alive() == false && player2->is_alive() == false)
 		{
-			BACKGROUND_SPEED += 1;
-			lvl_cap_speed += 20;
+			print_score_menu(sdl);
+			while (1)
+			{
+				if (SDL_PollEvent(&event) && event.type == SDL_KEYDOWN)
+				{
+					if (event.key.keysym.sym == SDLK_RETURN)
+						break ;
+				}
+			}
+			break ;
 		}
-		if (no_key(state) == 0 || (state[SDL_SCANCODE_A] && state[SDL_SCANCODE_D]))
-			player.idle();
+		if (OBJ_DESTROYED > (lvl_cap_speed * BACKGROUND_SPEED) / 2)
+		{
+			if (BACKGROUND_SPEED > 0)
+			{
+				FRONT_BACKGROUND_SPEED += 1;
+				BACKGROUND_SPEED += 1;
+				lvl_cap_speed += 100;
+			}
+		}
+		if (!state[SDL_SCANCODE_D])
+			player->reset_last_boost();
+		if ((!state[SDL_SCANCODE_A] && !state[SDL_SCANCODE_D] && !state[SDL_SCANCODE_SPACE]) || (state[SDL_SCANCODE_A] && state[SDL_SCANCODE_D]))
+			player->idle();
+		if ((!state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_RIGHT] && !state[SDL_SCANCODE_KP_0]) || (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_RIGHT]))
+			player2->idle();
+		player->set_score();
+		player2->set_score();
 		current_frame = SDL_GetTicks();
 		if (last_frame + 16 >= current_frame)
 			SDL_Delay(last_frame + 16 - current_frame);
 		last_frame = current_frame;
-		maintain_obstacles_progression(obj_list, &platform);
-		print_runner(sdl, &background, &player, &platform);
+		generation_only_ground(obj_list, &platform);
+		print_runner(sdl, &background, &front_background, player, player2, &platform, &score_texture);
 	}
-}
-
-void	print_menu(t_sdl *sdl, int menu, SDL_Texture *img_menu, SDL_Texture *img_arrow)
-{
-	SDL_Rect	dst;
-	SDL_Rect	menu_dst;
-
-	SDL_render_clear(sdl, sdl->renderer);
-//	SDL_render_target(sdl, sdl->renderer, sdl->buffer);
-//	SDL_render_clear(sdl, sdl->renderer);
-
-	menu_dst = {0, 0, 0, 0};
-	SDL_query_texture(sdl, img_menu, NULL, NULL, &menu_dst.w, &menu_dst.h);
-
-	if (menu == 0)
-		dst = {261, 214, 0, 0};
-	if (menu == 1)
-		dst = {221, 293, 0, 0};
-	if (menu == 2)
-		dst = {257, 379, 0, 0};
-	SDL_render_copy(sdl, sdl->renderer, img_menu, NULL, &menu_dst);
-	SDL_query_texture(sdl, img_arrow, NULL, NULL, &dst.w, &dst.h);
-	SDL_render_copy(sdl, sdl->renderer, img_arrow, NULL, &dst);
-//	SDL_render_target(sdl, sdl->renderer, NULL);
-//	SDL_render_copy(sdl, sdl->renderer, sdl->buffer, NULL, &sdl->disp);
-	SDL_RenderPresent(sdl->renderer);
+	clear_all_texture(&platform, &score_texture);
 }
 
 int		main()
@@ -192,43 +193,45 @@ int		main()
 	t_sdl		sdl;
 	const Uint8	*state;
 	int			menu(0);
-	SDL_Texture	*img_menu(nullptr), *img_arrow(nullptr);
 
+	SDL_Event	event;
+	SDL_Texture	*img_menu(nullptr), *img_arrow(nullptr);
 	SDL_init_struct(&sdl);
 	SDL_init_window(&sdl);
 	SDL_init_renderer(&sdl);
 	SDL_init_img();
+	sdl.buffer = SDL_create_texture(&sdl, sdl.buffer, 720, 480);
+	sdl.buffer_rect = {0, 0, 720, 480};
 	img_menu = SDL_load_texture(&sdl, sdl.renderer, img_menu, "img/menu.png");
 	img_arrow = SDL_load_texture(&sdl, sdl.renderer, img_arrow, "img/menu_arrow.png");
+	Player	player(&sdl, "img/runner1.png", 1, "img/heart1.png");
+	Player	player2(&sdl, "img/runner2.png", 2, "img/heart2.png");
 	while (1)
 	{
 		state = SDL_GetKeyboardState(NULL);
 		SDL_PumpEvents();
-		if (state[SDL_SCANCODE_RETURN])
+		if (SDL_PollEvent(&event) && event.type == SDL_KEYDOWN)
 		{
-			if (menu == 0)
-				runner_loop(&sdl, state);
-			if (menu == 1)
-				runner_loop(&sdl, state);
-			if (menu == 2)
-				break ;
-			TOT_OBJ = 0;
-			BACKGROUND_SPEED = 1;
+			if (event.key.keysym.sym == SDLK_RETURN)
+			{
+				if (menu == 0)
+					runner_loop(&sdl, state, &player, &player2);
+				if (menu == 1)
+					;
+				if (menu == 2)
+					break ;
+			}
+			if (event.key.keysym.sym == SDLK_UP)
+				menu -= menu == 0 ? 0 : 1;
+			if (event.key.keysym.sym == SDLK_DOWN)
+				menu += menu == 2 ? 0 : 1;
 		}
-		if (state[SDL_SCANCODE_UP])
-		{
-			menu -= menu == 0 ? 0 : 1;
-			SDL_Delay(100);
-		}
-		if (state[SDL_SCANCODE_DOWN])
-		{
-			menu += menu == 2 ? 0 : 1;
-			SDL_Delay(100);
-		}
-		print_menu(&sdl, menu, img_menu, img_arrow);
+		print_menu(&sdl, menu, img_menu, img_arrow, &player, &player2);
+		SDL_Delay(72);
 	}
 	SDL_DestroyTexture(img_menu);
 	SDL_DestroyTexture(img_arrow);
 	SDL_clean_struct(&sdl);
 	return (0);
 }
+

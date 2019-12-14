@@ -7,17 +7,22 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_mixer.h"
+#include "SDL_ttf.h"
 #include "Background.h"
 #include "Player.h"
 #include "Platform.h"
+#include <vector>
 #include <list>
 #include <ctime>
 
-static int	PLAYER_SPEED = 3;
-static int	BACKGROUND_SPEED = 1;
-static int	LVL_SPEED = 1;
-static int	PLAYER_VSPEED = -15;
-static int	NB_OBJ = 3;
+extern int	PLAYER_SPEED;
+extern int	BACKGROUND_SPEED;
+extern int	FRONT_BACKGROUND_SPEED;
+extern int	LVL_SPEED;
+extern int	PLAYER_VSPEED;
+extern int	TOT_OBJ;
+extern int	NB_IMG;
+extern int	OBJ_DESTROYED;
 
 // STRUCT
 
@@ -31,9 +36,31 @@ typedef struct		s_sdl
 			SDL_Rect		buffer_rect;
 }					t_sdl;
 
-
+class Player;
+class Background;
+class Platform;
 
 // FUNCTIONS
+
+//main.cpp
+
+int		no_key(const Uint8 *state);
+
+
+//print.cpp
+
+void	print_score_menu(t_sdl *sdl);
+void	print_obstacle(t_sdl *sdl, std::vector <t_obstacle> *platform);
+void	print_runner(t_sdl *sdl, Background *background, Background *front_background, Player *player, Player *player2, std::vector <t_obstacle> *platform, std::vector <SDL_Texture*> *score_texture);
+void	print_menu(t_sdl *sdl, int menu, SDL_Texture *img_menu, SDL_Texture *img_arrow, Player *player, Player *player2);
+
+//generation.cpp
+
+void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[3], int type, int box_collide, int dst_x, int dst_y);
+void	create_lvl(t_sdl *sdl, std::vector <t_obstacle> *platform, Platform obj_list[3]);
+void	generation_only_ground(Platform obj_list[3], std::vector <t_obstacle> *platform);
+
+//sdl_functions.cpp
 
 void			SDL_init_window(t_sdl *sdl);
 void			SDL_init_renderer(t_sdl *sdl);

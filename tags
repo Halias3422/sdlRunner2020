@@ -4,17 +4,50 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-FLAGS	Makefile	/^FLAGS= -std=c++11 -Wall -Werror -Wextra$/;"	m
+BACKGROUND_H	includes/Background.h	/^# define BACKGROUND_H$/;"	d
+BACKGROUND_SPEED	src/main.cpp	/^int		BACKGROUND_SPEED = 1;$/;"	v
+Background	includes/Background.h	/^class Background$/;"	c
+Background	src/Background.cpp	/^Background::Background(t_sdl *sdl, string path)$/;"	f	class:Background
+FLAGS	Makefile	/^FLAGS= -std=c++11 -Wall -Werror -Wextra $/;"	m
+FRONT_BACKGROUND_SPEED	src/main.cpp	/^int		FRONT_BACKGROUND_SPEED = 2;$/;"	v
+IDLE_1	src/Player.cpp	/^int IDLE_1 = 0;$/;"	v
+IDLE_2	src/Player.cpp	/^int IDLE_2 = 32;$/;"	v
 INC	Makefile	/^INC= $(addprefix $(INC_PATH), $(INCLUDES))$/;"	m
-INCLUDES	Makefile	/^INCLUDES= runner.h$/;"	m
+INCLUDES	Makefile	/^INCLUDES= runner.h \\$/;"	m
 INC_PATH	Makefile	/^INC_PATH= .\/includes\/$/;"	m
+JUMP_LEFT_1	src/Player.cpp	/^int JUMP_LEFT_1 = 512;$/;"	v
+JUMP_LEFT_2	src/Player.cpp	/^int JUMP_LEFT_2 = 544;$/;"	v
+JUMP_RIGHT_1	src/Player.cpp	/^int JUMP_RIGHT_1 = 448;$/;"	v
+JUMP_RIGHT_2	src/Player.cpp	/^int JUMP_RIGHT_2 = 480;$/;"	v
 LINUX_SDL	Makefile	/^LINUX_SDL= -Wl,-rpath=\/usr\/local\/lib -lSDL2 -lSDL2_image -lSDL2_mixer$/;"	m
+LVL_SPEED	src/main.cpp	/^int		LVL_SPEED = 1;$/;"	v
 MAC_SDL	Makefile	/^MAC_SDL= -I $(shell sdl2-config --cflags) $(shell sdl2-config --libs) -lSDL2_ttf -lSDL2_image -lSDL2_mixer$/;"	m
 NAME	Makefile	/^NAME= runner$/;"	m
+NB_IMG	src/main.cpp	/^int		NB_IMG = 4;$/;"	v
 OBJ	Makefile	/^OBJ= $(addprefix $(OBJ_PATH), $(OBJECTS))$/;"	m
 OBJECTS	Makefile	/^OBJECTS= $(SOURCES:.cpp=.o)$/;"	m
+OBJ_DESTROYED	src/main.cpp	/^int		OBJ_DESTROYED = 0;$/;"	v
 OBJ_PATH	Makefile	/^OBJ_PATH= .\/obj\/$/;"	m
+PLATFORM_H	includes/Platform.h	/^#define PLATFORM_H$/;"	d
+PLAYER_SPEED	src/main.cpp	/^int		PLAYER_SPEED = 2;$/;"	v
+PLAYER_VSPEED	src/main.cpp	/^int		PLAYER_VSPEED = -16;$/;"	v
+Platform	includes/Platform.h	/^class Platform$/;"	c
+Platform	src/Platform.cpp	/^Platform::Platform()$/;"	f	class:Platform
+Player	includes/Player.h	/^class Player$/;"	c
+Player	src/Player.cpp	/^Player::Player(t_sdl *sdl, string path, int nb)$/;"	f	class:Player
 RUNNER_H	includes/runner.h	/^# define RUNNER_H$/;"	d
+RUN_LEFT_1	src/Player.cpp	/^int RUN_LEFT_1 = 256;$/;"	v
+RUN_LEFT_2	src/Player.cpp	/^int RUN_LEFT_2 = 288;$/;"	v
+RUN_LEFT_3	src/Player.cpp	/^int RUN_LEFT_3 = 320;$/;"	v
+RUN_LEFT_4	src/Player.cpp	/^int RUN_LEFT_4 = 352;$/;"	v
+RUN_LEFT_5	src/Player.cpp	/^int RUN_LEFT_5 = 384;$/;"	v
+RUN_LEFT_6	src/Player.cpp	/^int RUN_LEFT_6 = 416;$/;"	v
+RUN_RIGHT_1	src/Player.cpp	/^int RUN_RIGHT_1 = 64;$/;"	v
+RUN_RIGHT_2	src/Player.cpp	/^int RUN_RIGHT_2 = 96;$/;"	v
+RUN_RIGHT_3	src/Player.cpp	/^int RUN_RIGHT_3 = 128;$/;"	v
+RUN_RIGHT_4	src/Player.cpp	/^int RUN_RIGHT_4 = 160;$/;"	v
+RUN_RIGHT_5	src/Player.cpp	/^int RUN_RIGHT_5 = 192;$/;"	v
+RUN_RIGHT_6	src/Player.cpp	/^int RUN_RIGHT_6 = 224;$/;"	v
 SDL_apply_color_to_renderer	src/sdl_functions.cpp	/^void			SDL_apply_color_to_renderer(SDL_Color rgba, t_sdl *sdl)$/;"	f
 SDL_clean_struct	src/sdl_functions.cpp	/^void			SDL_clean_struct(t_sdl *sdl)$/;"	f
 SDL_create_texture	src/sdl_functions.cpp	/^SDL_Texture		*SDL_create_texture(t_sdl *sdl, SDL_Texture *texture, int width,$/;"	f
@@ -25,19 +58,87 @@ SDL_init_renderer	src/sdl_functions.cpp	/^void			SDL_init_renderer(t_sdl *sdl)$/
 SDL_init_struct	src/sdl_functions.cpp	/^void			SDL_init_struct(t_sdl *sdl)$/;"	f
 SDL_init_window	src/sdl_functions.cpp	/^void			SDL_init_window(t_sdl *sdl)$/;"	f
 SDL_load_texture	src/sdl_functions.cpp	/^SDL_Texture		*SDL_load_texture(t_sdl *sdl, SDL_Renderer *renderer,$/;"	f
-SDL_query_texture	src/sdl_functions.cpp	/^void			SDL_query_texture(t_sdl *sdl, sdl_texture *texture, uint32 *format,$/;"	f
+SDL_query_texture	src/sdl_functions.cpp	/^void			SDL_query_texture(t_sdl *sdl, SDL_Texture *texture, Uint32 *format,$/;"	f
 SDL_render_clear	src/sdl_functions.cpp	/^void			SDL_render_clear(t_sdl *sdl, SDL_Renderer *renderer)$/;"	f
 SDL_render_copy	src/sdl_functions.cpp	/^void			SDL_render_copy(t_sdl *sdl, SDL_Renderer *renderer,$/;"	f
 SDL_render_target	src/sdl_functions.cpp	/^void			SDL_render_target(t_sdl *sdl, SDL_Renderer *renderer,$/;"	f
 SOURCES	Makefile	/^SOURCES= main.cpp \\$/;"	m
 SRC	Makefile	/^SRC= $(addprefix $(SRC_PATH), $(SOURCES))$/;"	m
 SRC_PATH	Makefile	/^SRC_PATH= .\/src\/$/;"	m
+TOT_OBJ	src/main.cpp	/^int		TOT_OBJ = 0;$/;"	v
+box_collide	includes/Platform.h	/^		int			box_collide;$/;"	m	struct:s_obstacle
+buffer	includes/runner.h	/^			SDL_Texture		*buffer;$/;"	m	struct:s_sdl
+buffer_rect	includes/runner.h	/^			SDL_Rect		buffer_rect;$/;"	m	struct:s_sdl
+clear_all_texture	src/main.cpp	/^void	clear_all_texture(vector <t_obstacle> *platform, vector <SDL_Texture*> *score_texture)$/;"	f
+create_lvl	src/generation.cpp	/^void	create_lvl(t_sdl *sdl, vector <t_obstacle> *platform, Platform obj_list[NB_IMG])$/;"	f
+create_platform	src/Platform.cpp	/^void	Platform::create_platform(t_sdl *sdl, string path)$/;"	f	class:Platform
+create_score_textures	src/main.cpp	/^void	create_score_textures(t_sdl *sdl, vector <SDL_Texture*> *score_texture)$/;"	f
+current_frame	includes/Player.h	/^	Uint32		current_frame = 0;$/;"	m	class:Player
 disp	includes/runner.h	/^			SDL_Rect		disp;$/;"	m	struct:s_sdl
 display	includes/runner.h	/^			SDL_DisplayMode	display;$/;"	m	struct:s_sdl
+dst	includes/Background.h	/^	SDL_Rect	dst;$/;"	m	class:Background
+dst	includes/Platform.h	/^		SDL_Rect	dst;$/;"	m	struct:s_obstacle
+dst	includes/Platform.h	/^	SDL_Rect	dst;$/;"	m	class:Platform
+dst	includes/Player.h	/^	SDL_Rect	dst;$/;"	m	class:Player
 failure_exit_program	src/sdl_functions.cpp	/^void			failure_exit_program(string error, t_sdl *sdl)$/;"	f
+fill_buffer	src/Player.cpp	/^void	Player::fill_buffer(t_sdl *sdl)$/;"	f	class:Player
+fill_obstacle	src/generation.cpp	/^void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[NB_IMG], int type, int box_collide, int dst_x, int dst_y)$/;"	f
+fillbuffer	src/Background.cpp	/^void Background::fillbuffer(t_sdl *sdl, string type)$/;"	f	class:Background
+game_paused	src/main.cpp	/^void	game_paused()$/;"	f
+generation_only_ground	src/generation.cpp	/^void	generation_only_ground(Platform obj_list[NB_IMG], vector <t_obstacle> *platform)$/;"	f
+get_dst	src/Platform.cpp	/^SDL_Rect	Platform::get_dst()$/;"	f	class:Platform
+get_texture	src/Platform.cpp	/^SDL_Texture	*Platform::get_texture()$/;"	f	class:Platform
+grounded	includes/Player.h	/^	bool		grounded = false;$/;"	m	class:Player
+horizontal_move	src/Player.cpp	/^void	Player::horizontal_move(int way, vector <t_obstacle> *platform)$/;"	f	class:Player
+idle	src/Player.cpp	/^void	Player::idle()$/;"	f	class:Player
+is_alive	src/Player.cpp	/^bool	Player::is_alive()$/;"	f	class:Player
+jump	src/Player.cpp	/^void	Player::jump(int pressed)$/;"	f	class:Player
+jump_state	includes/Player.h	/^	int			jump_state = 0;$/;"	m	class:Player
+last_boost	includes/Player.h	/^	Uint32		last_boost = 0;$/;"	m	class:Player
+last_frame	includes/Player.h	/^	Uint32		last_frame = 0;$/;"	m	class:Player
+left	src/Player.cpp	/^void	Player::left()$/;"	f	class:Player
+life	includes/Player.h	/^	int			life = 1;$/;"	m	class:Player
 main	src/main.cpp	/^int		main()$/;"	f
+menu_animation	src/Player.cpp	/^void	Player::menu_animation(t_sdl *sdl, int nb)$/;"	f	class:Player
+menu_left	includes/Player.h	/^	int			menu_left = 0;$/;"	m	class:Player
+menu_right	includes/Player.h	/^	int			menu_right = 0;$/;"	m	class:Player
+nb_obstacle	includes/Platform.h	/^		int			nb_obstacle;$/;"	m	struct:s_obstacle
+no_key	src/main.cpp	/^int		no_key(const Uint8 *state)$/;"	f
+print_menu	src/print.cpp	/^void	print_menu(t_sdl *sdl, int menu, SDL_Texture *img_menu, SDL_Texture *img_arrow, Player *player, Player *player2)$/;"	f
+print_obstacle	src/print.cpp	/^void	print_obstacle(t_sdl *sdl, vector <t_obstacle> *platform)$/;"	f
+print_runner	src/print.cpp	/^void	print_runner(t_sdl *sdl, Background *background, Background *front_background, Player *player, Player *player2, vector <t_obstacle> *platform, vector <SDL_Texture*> *score_texture)$/;"	f
+print_score	src/Player.cpp	/^void	Player::print_score(t_sdl *sdl, vector <SDL_Texture*> *score_texture, int nb)$/;"	f	class:Player
+print_score_menu	src/print.cpp	/^void	print_score_menu(t_sdl *sdl)$/;"	f
+reborn	src/Player.cpp	/^void	Player::reborn()$/;"	f	class:Player
 renderer	includes/runner.h	/^			SDL_Renderer	*renderer;$/;"	m	struct:s_sdl
-runner_loop	src/main.cpp	/^void	runner_loop(t_sdl *sdl, const Uint8 *state)$/;"	f
+reset_dst	src/Player.cpp	/^void	Player::reset_dst(int nb)$/;"	f	class:Player
+reset_last_boost	src/Player.cpp	/^void	Player::reset_last_boost()$/;"	f	class:Player
+right	src/Player.cpp	/^void	Player::right()$/;"	f	class:Player
+runner_loop	src/main.cpp	/^void	runner_loop(t_sdl *sdl, const Uint8 *state, Player *player, Player *player2)$/;"	f
+s_obstacle	includes/Platform.h	/^typedef struct		s_obstacle$/;"	s
 s_sdl	includes/runner.h	/^typedef struct		s_sdl$/;"	s
+score	includes/Player.h	/^	int			score = 0;$/;"	m	class:Player
+set_life	src/Player.cpp	/^void	Player::set_life(int lifeuh)$/;"	f	class:Player
+set_score	src/Player.cpp	/^void	Player::set_score()$/;"	f	class:Player
+src	includes/Background.h	/^	SDL_Rect	src;$/;"	m	class:Background
+src	includes/Player.h	/^	SDL_Rect	src;$/;"	m	class:Player
+started_jump	includes/Player.h	/^	Uint32		started_jump = 0;$/;"	m	class:Player
+state	includes/Player.h	/^	std::string	state = "idle";$/;"	m	class:Player
+t_obstacle	includes/Platform.h	/^}					t_obstacle;$/;"	t	typeref:struct:s_obstacle
+t_obstacle	includes/Player.h	/^typedef struct s_obstacle	t_obstacle;$/;"	t	typeref:struct:s_obstacle
+t_sdl	includes/Background.h	/^typedef struct s_sdl t_sdl;$/;"	t	typeref:struct:s_sdl
 t_sdl	includes/runner.h	/^}					t_sdl;$/;"	t	typeref:struct:s_sdl
+texture	includes/Background.h	/^	SDL_Texture	*texture = NULL;$/;"	m	class:Background
+texture	includes/Platform.h	/^		SDL_Texture	*texture;$/;"	m	struct:s_obstacle
+texture	includes/Platform.h	/^	SDL_Texture	*texture = NULL;$/;"	m	class:Platform
+texture	includes/Player.h	/^	SDL_Texture	*texture = NULL;$/;"	m	class:Player
+tmp_dst	includes/Background.h	/^	SDL_Rect	tmp_dst;$/;"	m	class:Background
+tmp_src	includes/Background.h	/^	SDL_Rect	tmp_src;$/;"	m	class:Background
+type	includes/Platform.h	/^		int			type;$/;"	m	struct:s_obstacle
+vertical_move	src/Player.cpp	/^void	Player::vertical_move(vector <t_obstacle> *platform)$/;"	f	class:Player
+vspeed	includes/Player.h	/^	int			vspeed = 0;$/;"	m	class:Player
+wait	includes/Background.h	/^	int			wait = 0;$/;"	m	class:Background
 window	includes/runner.h	/^			SDL_Window		*window;$/;"	m	struct:s_sdl
+~Background	src/Background.cpp	/^Background::~Background()$/;"	f	class:Background
+~Platform	src/Platform.cpp	/^Platform::~Platform()$/;"	f	class:Platform
+~Player	src/Player.cpp	/^Player::~Player()$/;"	f	class:Player

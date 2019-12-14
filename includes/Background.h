@@ -10,7 +10,7 @@ class Background
 	public:
 	Background(t_sdl *sdl, std::string path);
 
-	void fillbuffer(t_sdl *sdl);
+	void fillbuffer(t_sdl *sdl, std::string type);
 
 	~Background();
 
@@ -20,6 +20,7 @@ class Background
 	SDL_Rect	dst;
 	SDL_Rect	tmp_src;
 	SDL_Rect	tmp_dst;
+	int			wait = 0;
 };
 
 #endif

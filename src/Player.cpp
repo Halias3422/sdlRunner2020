@@ -2,28 +2,43 @@
 
 using namespace std;
 
-//idle 1 - 0
-//idle 2 - 32
-//run 1 - 128
-//run 2 - 96
-//run 3 - 64
-//jump 1 - 160
-//jump 2 - 192
-//run 4 - 224
-//run 5 - 256
-//run 6 - 288
-//jump 3 - 320
-//jump 4 - 352
+int IDLE_1 = 0;
+int IDLE_2 = 32;
+int RUN_RIGHT_1 = 64;
+int RUN_RIGHT_2 = 96;
+int RUN_RIGHT_3 = 128;
+int RUN_RIGHT_4 = 160;
+int RUN_RIGHT_5 = 192;
+int RUN_RIGHT_6 = 224;
+int RUN_LEFT_1 = 256;
+int RUN_LEFT_2 = 288;
+int RUN_LEFT_3 = 320;
+int RUN_LEFT_4 = 352;
+int RUN_LEFT_5 = 384;
+int RUN_LEFT_6 = 416;
+int JUMP_RIGHT_1 = 448;
+int JUMP_RIGHT_2 = 480;
+int JUMP_LEFT_1 = 512;
+int JUMP_LEFT_2 = 544;
 
-//128 = 316
-//96 = 284
-//64 = 252
-
-Player::Player(t_sdl *sdl, string path)
+Player::Player(t_sdl *sdl, string path, int nb, string heart_path)
 {
 	texture = SDL_load_texture(sdl, sdl->renderer, texture, path);
 	src = {0, 0, 32, 64};
-	dst = {200, 0, 32, 64};
+	if (nb == 0)
+		dst = {200, 0, 32, 64};
+	else if (nb == 1)
+		dst = {250, 0, 32, 64};
+	heart = SDL_load_texture(sdl, sdl->renderer, heart, heart_path);
+	player_nb = nb;
+}
+
+void	Player::reset_dst()
+{
+	if (player_nb == 1)
+		dst = {200, -50, 32, 64};
+	else if (player_nb == 2)
+		dst = {200, -50, 32, 64};
 }
 
 void	Player::jump(int pressed)
@@ -36,6 +51,8 @@ void	Player::jump(int pressed)
 			jump_state = 0;
 		else
 		{
+			PLAYER_SPEED = 2;
+			last_boost = 0;
 			grounded = false;
 			vspeed = PLAYER_VSPEED;
 			jump_state = 1;
@@ -47,65 +64,59 @@ void	Player::jump(int pressed)
 
 bool	Player::is_alive()
 {
-	if (life == 0)
+	//	return (true);
+	if (life <= 0)
 	{
-		cout << "position joueur mort -- x = " << dst.x << " et y = " << dst.y << endl;
+//		cout << "position joueur mort -- x = " << dst.x << " et y = " << dst.y << endl;
 		return (false);
 	}
 	return (true);
 }
-/*
-void	Player::check_collisions(list <t_obstacle> *platform)
-{
-	list	<t_obstacle>::iterator i;
-	SDL_Rect	plat_dst;
-	int			check = 0;
 
-	for (i = platform->begin(); i != platform->end(); i++)
-	{
-		plat_dst = i->dst;
-		if (dst.y + dst.h > plat_dst.y && dst.y < plat_dst.y && dst.x +
-				dst.w > plat_dst.x && dst.x + dst.w <= plat_dst.x + plat_dst.w && ++check)
-		{
-			grounded = true;
-			jump_state = 0;
-			dst.y = plat_dst.y - dst.h - 1;
-		}
-		if (dst.y > plat_dst.y && dst.y < plat_dst.y + plat_dst.h && dst.x +
-				dst.w > plat_dst.x && dst.x + dst.w <= plat_dst.x + plat_dst.w && ++check)
-		{
-			dst.y = plat_dst.y + plat_dst.h;
-		}
-		if (dst.x + dst.w > plat_dst.x && dst.x < plat_dst.x && dst.y +
-				dst.h > plat_dst.y && dst.y + dst.h <= plat_dst.y + plat_dst.h && ++check)
-			dst.x = plat_dst.x - dst.w;
-		if (dst.x > plat_dst.x && dst.x < plat_dst.x + plat_dst.w && dst.y +
-				dst.h > plat_dst.y && dst.y + dst.h <= plat_dst.y + plat_dst.h && ++check)
-			dst.x = plat_dst.x + plat_dst.w;
-		if (check == 0)
-			grounded = false;
-	}
+void	Player::reborn()
+{
+	dst.x = 200;
+	dst.y = 0;
 }
-*/
-void	Player::horizontal_move(int way, list <t_obstacle> *platform)
+
+void	Player::reset_last_boost()
 {
-	list	<t_obstacle>::iterator i;
+	PLAYER_SPEED = 2;
+	last_boost = 0;
+}
+
+void	Player::horizontal_move(int way, vector <t_obstacle> *platform)
+{
+	vector	<t_obstacle>::iterator i;
 	SDL_Rect	plat_dst;
 
-		dst.x += PLAYER_SPEED * way;
+//	cout << "player speed = " << PLAYER_SPEED << endl;
+	if (way != 0 && way != -1 && grounded == true && last_boost == 0)
+		last_boost = SDL_GetTicks();
+	if (way != 0 && way != -1  && last_boost + 2000 < SDL_GetTicks())
+	{
+//		PLAYER_SPEED += PLAYER_SPEED < 3 ? 1 : 0;
+		last_boost = SDL_GetTicks();
+	}
+	else if (way == -1)
+	{
+		PLAYER_SPEED = 2;
+	}
+	dst.x += PLAYER_SPEED * way;
 	if (dst.x > 720 - 32)
 		dst.x = 720 - 32;
 	if (dst.x < 0 - dst.w)
+	{
 		life -= 1;
-	if (life == 0)
-		cout << "dead\n";
+		reset_dst();
+	}
 	if (way == 0 && grounded == true)
 		dst.x -= BACKGROUND_SPEED;
 	for (i = platform->begin(); i != platform->end(); i++)
 	{
 		plat_dst = i->dst;
-		if ((dst.y < plat_dst.y && dst.y + dst.h > plat_dst.y) || (dst.y < plat_dst.y + plat_dst.h && dst.y > plat_dst.y) ||
-			(dst.y + dst.h > plat_dst.y && dst.y + dst.h < plat_dst.y + plat_dst.h)) //if control pb vertical
+		if (i->box_collide == 1 && ((dst.y < plat_dst.y && dst.y + dst.h > plat_dst.y) || (dst.y < plat_dst.y + plat_dst.h && dst.y > plat_dst.y) ||
+					(dst.y + dst.h > plat_dst.y && dst.y + dst.h < plat_dst.y + plat_dst.h))) //if control pb vertical
 		{
 			if (dst.x > plat_dst.x && dst.x < plat_dst.x + plat_dst.w) //if control gauche joueur
 			{
@@ -113,33 +124,32 @@ void	Player::horizontal_move(int way, list <t_obstacle> *platform)
 			}
 			if (dst.x + dst.w > plat_dst.x && dst.x + dst.w < plat_dst.x + plat_dst.w) //if control droite joueur
 			{
-				cout << "je trigger la deuxieme collision" << endl;
 				dst.x = plat_dst.x - dst.w;
 			}
 		}
 	}
 }
 
-void	Player::vertical_move(list <t_obstacle> *platform)
+void	Player::vertical_move(vector <t_obstacle> *platform)
 {
-	list	<t_obstacle>::iterator i;
+	vector	<t_obstacle>::iterator i;
 	SDL_Rect	plat_dst;
 	int			check(0);
-	
-//	if (grounded == true)
-//		return ;
+
+	//	if (grounded == true)
+	//		return ;
 	if (grounded == false)
 	{
-	dst.y += vspeed * 1.5 / 3;
-	vspeed += 1;
-	if (vspeed == 11)
-		vspeed = 10;
+		dst.y += vspeed * 1.5 / 3;
+		vspeed += 1;
+		if (vspeed == 11)
+			vspeed = 10;
 	}
 	for (i = platform->begin(); i != platform->end(); i++)
 	{
 		plat_dst = i->dst;
-		if ((dst.x < plat_dst.x && dst.x + dst.w > plat_dst.x) || (dst.x < plat_dst.x + plat_dst.w && dst.x > plat_dst.x) ||
-			(dst.x + dst.w > plat_dst.x && dst.x + dst.w < plat_dst.x + plat_dst.w)) //if control pb vertical
+		if (i->box_collide == 1 && ((dst.x < plat_dst.x && dst.x + dst.w > plat_dst.x) || (dst.x < plat_dst.x + plat_dst.w && dst.x > plat_dst.x) ||
+					(dst.x + dst.w > plat_dst.x && dst.x + dst.w < plat_dst.x + plat_dst.w))) //if control pb vertical
 		{
 			if (dst.y >= plat_dst.y && dst.y <= plat_dst.y + plat_dst.h && ++check) //if control gauche joueur
 			{
@@ -148,6 +158,11 @@ void	Player::vertical_move(list <t_obstacle> *platform)
 			if (dst.y + dst.h >= plat_dst.y && dst.y + dst.h <= plat_dst.y + plat_dst.h && ++check) //if control droite joueur
 			{
 				dst.y = plat_dst.y - dst.h;
+				if (i->type == 2 || i->type == 3)
+				{
+					life -= 1;
+					reset_dst();
+				}
 				grounded = true;
 				started_jump = 0;
 				vspeed = 0;
@@ -155,9 +170,15 @@ void	Player::vertical_move(list <t_obstacle> *platform)
 		}
 	}
 	if (check == 0)
+	{
+		last_boost = 0;
 		grounded = false;
+	}
 	if (dst.y > 480)
+	{
 		life -= 1;
+		reset_dst();
+	}
 }
 
 void	Player::left()
@@ -165,45 +186,31 @@ void	Player::left()
 	current_frame = SDL_GetTicks();
 	if (grounded == true)
 	{
-		if (last_frame + 16 * 6 < current_frame)
+		if (last_frame + 16 * 4 < current_frame)
 		{
-			if (forward == 0)
-			{
-				if (src.x == 288)
-					src.x = 256;
-				else if (src.x == 256)
-					src.x = 224;
-				else if (src.x == 224)
-				{
-					src.x = 256;
-					forward = 1;
-				}
-				else
-					src.x = 288;
-			}
+			if (src.x == RUN_LEFT_1)
+				src.x = RUN_LEFT_2;
+			else if (src.x == RUN_LEFT_2)
+				src.x = RUN_LEFT_3;
+			else if (src.x == RUN_LEFT_3)
+				src.x = RUN_LEFT_4;
+			else if (src.x == RUN_LEFT_4)
+				src.x = RUN_LEFT_5;
+			else if (src.x == RUN_LEFT_5)
+				src.x = RUN_LEFT_6;
+			else if (src.x == RUN_LEFT_6)
+				src.x = RUN_LEFT_1;
 			else
-			{
-				if (src.x == 224)
-					src.x = 256;
-				else if (src.x == 288)
-					src.x = 256;
-				else if (src.x == 256)
-				{
-					src.x = 288;
-					forward = 0;
-				}
-				else
-					src.x = 288;
-			}
+				src.x = RUN_LEFT_1;
 			last_frame = current_frame;
 		}
 	}
 	else if (grounded == false)
 	{
-		if (vspeed <= 0)
-			src.x = 320;
-		else
-			src.x = 352;
+		//	if (vspeed <= 0)
+		src.x = JUMP_LEFT_1;
+		//	else
+		//		src.x = JUMP_LEFT_2;
 	}
 }
 
@@ -212,47 +219,78 @@ void	Player::right()
 	current_frame = SDL_GetTicks();
 	if (grounded == true)
 	{
-		if (last_frame + 16 * 6 < current_frame)
+		if (last_frame + 16 * 4 < current_frame)
 		{
-			if (forward == 0)
-			{
-				if (src.x == 128)
-					src.x = 96;
-				else if (src.x == 96)
-					src.x = 64;
-				else if (src.x == 64)
-				{
-					src.x = 96;
-					forward = 1;
-				}
-				else
-					src.x = 128;
-			}
+			if (src.x == RUN_RIGHT_1)
+				src.x = RUN_RIGHT_2;
+			else if (src.x == RUN_RIGHT_2)
+				src.x = RUN_RIGHT_3;
+			else if (src.x == RUN_RIGHT_3)
+				src.x = RUN_RIGHT_4;
+			else if (src.x == RUN_RIGHT_4)
+				src.x = RUN_RIGHT_5;
+			else if (src.x == RUN_RIGHT_5)
+				src.x = RUN_RIGHT_6;
+			else if (src.x == RUN_RIGHT_6)
+				src.x = RUN_RIGHT_1;
 			else
-			{
-				if (src.x == 64)
-					src.x = 96;
-				else if (src.x == 128)
-					src.x = 96;
-				else if (src.x == 96)
-				{
-					src.x = 128;
-					forward = 0;
-				}
-				else
-					src.x = 128;
-			}
+				src.x = RUN_RIGHT_1;
 			last_frame = current_frame;
 		}
 	}
 	else if (grounded == false)
 	{
-		if (vspeed <= 0)
-			src.x = 160;
-		else
-			src.x = 192;
+		//	if (vspeed <= 0)
+		src.x = JUMP_RIGHT_1;
+		//	else
+		//		src.x = JUMP_RIGHT_2;
 	}
 }
+
+void	Player::print_score(t_sdl *sdl, vector <SDL_Texture*> *score_texture)
+{
+	SDL_Rect	dst = {0, 10, 32, 64};
+	SDL_Texture	*tmp;
+	int			div;
+	int			res;
+	int			diff_dst;
+	string		score_tot;
+	int			length;
+
+	score_tot = to_string(score);
+	length = score_tot.length() - 1;
+ 	if (player_nb == 2)
+		diff_dst = 720 - 52;
+	else
+		diff_dst = 52 - 32 + length * 32;
+	div = score;
+	while (div > 0)
+	{
+		res = div % 10;
+		div = div / 10;
+		dst.x = diff_dst;
+		tmp = score_texture->at(res);
+		SDL_render_copy(sdl, sdl->renderer, tmp, NULL, &dst);
+		diff_dst -= 32;
+	}
+}
+
+void	Player::print_heart(t_sdl *sdl)
+{
+	if (player_nb == 1)
+		heart_dst.x = 20;
+	else if (player_nb == 2)
+		heart_dst.x = 700 - 32;
+	for (int i = 0; i < life; i++)
+	{
+		SDL_render_copy(sdl, sdl->renderer, heart, NULL, &heart_dst);
+		if (player_nb == 1)
+			heart_dst.x += 36;
+		else if (player_nb == 2)
+			heart_dst.x -= 36;
+	}
+}
+
 void	Player::idle()
 {
 	current_frame = SDL_GetTicks();
@@ -264,6 +302,66 @@ void	Player::idle()
 		else
 			src.x = 0;
 	}
+}
+
+void	Player::set_score()
+{
+	if (life >= 1)
+		score = OBJ_DESTROYED;
+}
+
+void	Player::menu_animation(t_sdl *sdl)
+{
+	dst.y = 125;
+	dst.w = 32 * 5;
+	dst.h = 64 * 5;
+	if (player_nb == 1)
+	{
+		if (menu_right == RUN_RIGHT_1)
+			src.x = RUN_RIGHT_2;
+		else if (menu_right == RUN_RIGHT_2)
+			src.x = RUN_RIGHT_3;
+		else if (menu_right == RUN_RIGHT_3)
+		src.x = RUN_RIGHT_4;
+		else if (menu_right == RUN_RIGHT_4)
+			src.x = RUN_RIGHT_5;
+		else if (menu_right == RUN_RIGHT_5)
+			src.x = RUN_RIGHT_6;
+		else if (menu_right == RUN_RIGHT_6)
+			src.x = RUN_RIGHT_1;
+		else
+			src.x = RUN_RIGHT_1;
+		dst.x = 50;
+		fill_buffer(sdl);
+		menu_right = src.x;
+	}
+	else
+	{
+		if (menu_left == RUN_LEFT_1)
+			src.x = RUN_LEFT_2;
+		else if (menu_left == RUN_LEFT_2)
+			src.x = RUN_LEFT_3;
+		else if (menu_left == RUN_LEFT_3)
+			src.x = RUN_LEFT_4;
+		else if (menu_left == RUN_LEFT_4)
+			src.x = RUN_LEFT_5;
+		else if (menu_left == RUN_LEFT_5)
+			src.x = RUN_LEFT_6;
+		else if (menu_left == RUN_LEFT_6)
+			src.x = RUN_LEFT_1;
+		else
+			src.x = RUN_LEFT_1;
+		dst.x = 490;
+		fill_buffer(sdl);
+		menu_left = src.x;
+	}
+	src = {0, 0, 32, 64};
+	dst = {200, 0, 32, 64};
+}
+
+void	Player::set_life(int lifeuh)
+{
+	life = lifeuh;
 }
 
 void	Player::fill_buffer(t_sdl *sdl)
