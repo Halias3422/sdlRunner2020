@@ -8,15 +8,8 @@ int		FRONT_BACKGROUND_SPEED = 2;
 int		LVL_SPEED = 1;
 int		PLAYER_VSPEED = -16;
 int		TOT_OBJ = 0;
-int		NB_IMG = 4;
+const int		NB_IMG = 4;
 int		OBJ_DESTROYED = 0;
-
-int		no_key(const Uint8 *state)
-{
-	if (state[SDL_SCANCODE_A] || state[SDL_SCANCODE_D] || state[SDL_SCANCODE_SPACE])
-		return (1);
-	return (0);
-}
 
 void	create_score_textures(t_sdl *sdl, vector <SDL_Texture*> *score_texture)
 {
@@ -142,7 +135,7 @@ void	runner_loop(t_sdl *sdl, const Uint8 *state, Player *player, Player *player2
 			player->jump(1);
 		else
 			player->jump(0);
-		if (state[SDL_SCANCODE_KP_0])
+		if (state[SDL_SCANCODE_RCTRL]/*state[SDL_SCANCODE_KP_0]*/)
 			player2->jump(1);
 		else
 			player2->jump(0);
@@ -217,7 +210,7 @@ int		main()
 				if (menu == 0)
 					runner_loop(&sdl, state, &player, &player2);
 				if (menu == 1)
-					;
+					runner_loop (&sdl, state, &player, &player2);
 				if (menu == 2)
 					break ;
 			}

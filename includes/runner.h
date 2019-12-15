@@ -4,10 +4,10 @@
 #include <unistd.h>
 #include <iostream>
 //#include <string>
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_mixer.h"
-#include "SDL_ttf.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_mixer.h"
+#include "SDL2/SDL_ttf.h"
 #include "Background.h"
 #include "Player.h"
 #include "Platform.h"
@@ -21,7 +21,7 @@ extern int	FRONT_BACKGROUND_SPEED;
 extern int	LVL_SPEED;
 extern int	PLAYER_VSPEED;
 extern int	TOT_OBJ;
-extern int	NB_IMG;
+extern const int	NB_IMG;
 extern int	OBJ_DESTROYED;
 
 // STRUCT

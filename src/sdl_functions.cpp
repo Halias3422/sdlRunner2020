@@ -23,7 +23,7 @@ void			SDL_init_window(t_sdl *sdl)
 	sdl->disp = {0, 0, sdl->display.w, sdl->display.h};
 	if ((sdl->window = SDL_CreateWindow("Runner",
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, sdl->disp.w,
-			sdl->disp.h, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN)) == NULL)
+			sdl->disp.h, SDL_WINDOW_SHOWN)) == NULL)
 
 /*	if ((sdl->window = SDL_CreateWindow("Runner",
 				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, sdl->disp.w,

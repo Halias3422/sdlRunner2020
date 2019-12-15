@@ -23,7 +23,7 @@ INC= $(addprefix $(INC_PATH), $(INCLUDES))
 SRC= $(addprefix $(SRC_PATH), $(SOURCES))
 OBJ= $(addprefix $(OBJ_PATH), $(OBJECTS))
 
-FLAGS= -std=c++11 -Wall -Werror -Wextra 
+FLAGS= -Wall -Werror -Wextra
 MAC_SDL= -I $(shell sdl2-config --cflags) $(shell sdl2-config --libs) -lSDL2_ttf -lSDL2_image -lSDL2_mixer
 LINUX_SDL= -Wl,-rpath=/usr/local/lib -lSDL2 -lSDL2_image -lSDL2_mixer
 

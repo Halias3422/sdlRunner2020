@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[NB_IMG], int type, int box_collide, int dst_x, int dst_y)
+void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[(int)4], int type, int box_collide, int dst_x, int dst_y)
 {
 	new_obj->type = type;
 	new_obj->nb_obstacle = TOT_OBJ++;
@@ -13,7 +13,7 @@ void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[NB_IMG], int type, int
 	new_obj->dst.y = dst_y;
 }
 
-void	create_lvl(t_sdl *sdl, vector <t_obstacle> *platform, Platform obj_list[NB_IMG])
+void	create_lvl(t_sdl *sdl, vector <t_obstacle> *platform, Platform obj_list[4])
 {
 	int			i = 0;
 	t_obstacle	new_obj;
@@ -35,7 +35,7 @@ void	create_lvl(t_sdl *sdl, vector <t_obstacle> *platform, Platform obj_list[NB_
 	platform->push_back(new_obj);
 */}
 
-void	generation_only_ground(Platform obj_list[NB_IMG], vector <t_obstacle> *platform)
+void	generation_only_ground(Platform obj_list[4], vector <t_obstacle> *platform)
 {
 	vector <t_obstacle>::iterator begin = platform->begin();
 	vector <t_obstacle>::iterator end = platform->end();

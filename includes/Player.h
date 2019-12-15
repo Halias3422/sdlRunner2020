@@ -1,5 +1,6 @@
 #include "runner.h"
 #include <list>
+#include <vector>
 
 typedef struct s_obstacle	t_obstacle;
 
