@@ -36,13 +36,15 @@ Player::Player(t_sdl *sdl, string path, int nb, string heart_path)
 void	Player::reset_dst()
 {
 	if (player_nb == 1)
-		dst = {200, -50, 32, 64};
+		dst = {72 + 36, 100 - 64, 32, 64};
 	else if (player_nb == 2)
-		dst = {200, -50, 32, 64};
+		dst = {72 + 36, 100 - 64, 32, 64};
 }
 
 void	Player::jump(int pressed)
 {
+	(void)extra_horizontal_force;
+	(void)extra_vertical_force;
 	if (pressed == 1 && grounded == true)
 		started_jump = SDL_GetTicks();
 	if (pressed == 1 && (grounded == true || jump_state == 1))
@@ -51,6 +53,7 @@ void	Player::jump(int pressed)
 			jump_state = 0;
 		else
 		{
+			extra_horizontal_force = 0;
 			PLAYER_SPEED = 2;
 			last_boost = 0;
 			grounded = false;
@@ -73,10 +76,14 @@ bool	Player::is_alive()
 	return (true);
 }
 
-void	Player::reborn()
+void	Player::reborn(vector <t_obstacle> *platform, Platform obj_list[NB_IMG])
 {
-	dst.x = 200;
-	dst.y = 0;
+	t_obstacle	new_obj;
+
+	reset_dst();
+	extra_horizontal_force = -BACKGROUND_SPEED;
+	fill_obstacle(&new_obj, obj_list, 0, 1, 72, 100, -BACKGROUND_SPEED, 0, 1);
+	platform->push_back(new_obj);
 }
 
 void	Player::reset_last_boost()
@@ -85,9 +92,9 @@ void	Player::reset_last_boost()
 	last_boost = 0;
 }
 
-void	Player::horizontal_move(int way, vector <t_obstacle> *platform)
+void	Player::horizontal_move(int way, vector <t_obstacle> *platform, Platform obj_list[NB_IMG])
 {
-	vector	<t_obstacle>::iterator i;
+	vector		<t_obstacle>::iterator i;
 	SDL_Rect	plat_dst;
 
 //	cout << "player speed = " << PLAYER_SPEED << endl;
@@ -108,10 +115,11 @@ void	Player::horizontal_move(int way, vector <t_obstacle> *platform)
 	if (dst.x < 0 - dst.w)
 	{
 		life -= 1;
-		reset_dst();
+		if (life > 0)
+			reborn(platform, obj_list);
 	}
 	if (way == 0 && grounded == true)
-		dst.x -= BACKGROUND_SPEED;
+		dst.x -= BACKGROUND_SPEED + extra_horizontal_force;
 	for (i = platform->begin(); i != platform->end(); i++)
 	{
 		plat_dst = i->dst;
@@ -130,7 +138,7 @@ void	Player::horizontal_move(int way, vector <t_obstacle> *platform)
 	}
 }
 
-void	Player::vertical_move(vector <t_obstacle> *platform)
+void	Player::vertical_move(vector <t_obstacle> *platform, Platform obj_list[NB_IMG])
 {
 	vector	<t_obstacle>::iterator i;
 	SDL_Rect	plat_dst;
@@ -161,7 +169,8 @@ void	Player::vertical_move(vector <t_obstacle> *platform)
 				if (i->type == 2 || i->type == 3)
 				{
 					life -= 1;
-					reset_dst();
+					if (life > 0)
+						reborn(platform, obj_list);
 				}
 				grounded = true;
 				started_jump = 0;
@@ -171,13 +180,15 @@ void	Player::vertical_move(vector <t_obstacle> *platform)
 	}
 	if (check == 0)
 	{
+		extra_horizontal_force = 0;
 		last_boost = 0;
 		grounded = false;
 	}
 	if (dst.y > 480)
 	{
 		life -= 1;
-		reset_dst();
+		if (life > 0)
+			reborn(platform, obj_list);
 	}
 }
 
@@ -361,7 +372,10 @@ void	Player::menu_animation(t_sdl *sdl)
 
 void	Player::set_life(int lifeuh)
 {
-	life = lifeuh;
+	if (player_nb == 2 && LIFE_PLAYER_2 == 0)
+		life = 0;
+	else
+		life = lifeuh;
 }
 
 void	Player::fill_buffer(t_sdl *sdl)

@@ -23,6 +23,14 @@ extern int	PLAYER_VSPEED;
 extern int	TOT_OBJ;
 extern int	NB_IMG;
 extern int	OBJ_DESTROYED;
+extern int	LIFE_PLAYER;
+extern int	LIFE_PLAYER_2;
+extern int	DEATHMATCH;
+extern int	RESOLUTION;
+extern int	SAVED_BACKGROUND_SPEED;
+extern int	SAVED_LIFE_PLAYER;
+extern int	SAVED_LIFE_PLAYER_2;
+extern int	SAVED_DEATHMATCH;
 
 // STRUCT
 
@@ -49,20 +57,22 @@ int		no_key(const Uint8 *state);
 
 //print.cpp
 
+void	print_menu_option(t_sdl *sdl, SDL_Texture *menu_option, SDL_Texture *menu_check, SDL_Texture *img_arrow, int first_menu, int submenu);
 void	print_score_menu(t_sdl *sdl);
 void	print_obstacle(t_sdl *sdl, std::vector <t_obstacle> *platform);
-void	print_runner(t_sdl *sdl, Background *background, Background *front_background, Player *player, Player *player2, std::vector <t_obstacle> *platform, std::vector <SDL_Texture*> *score_texture);
+void	print_runner(t_sdl *sdl, Background *background, Background *front_background, Player *player, Player *player2, std::vector <t_obstacle> *platform, std::vector <SDL_Texture*> *score_texture, Platform obj_list[NB_IMG]);
 void	print_menu(t_sdl *sdl, int menu, SDL_Texture *img_menu, SDL_Texture *img_arrow, Player *player, Player *player2);
 
 //generation.cpp
 
-void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[3], int type, int box_collide, int dst_x, int dst_y);
+void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[4], int type, int box_collide, int dst_x, int dst_y, int extra_horizontal_force, int extra_vertical_force, int ignore);
 void	create_lvl(t_sdl *sdl, std::vector <t_obstacle> *platform, Platform obj_list[3]);
 void	generation_only_ground(Platform obj_list[3], std::vector <t_obstacle> *platform);
 
 //sdl_functions.cpp
 
-void			SDL_init_window(t_sdl *sdl);
+void			SDL_init(t_sdl *sdl);
+void			SDL_create_window(t_sdl *sdl, int width, int heigth);
 void			SDL_init_renderer(t_sdl *sdl);
 SDL_Texture		*SDL_create_texture(t_sdl *sdl, SDL_Texture *texture, int width,
 					int height);

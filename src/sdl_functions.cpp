@@ -6,7 +6,7 @@
 /*   By: rlegendr <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/12/10 10:22:57 by rlegendr     #+#   ##    ##    #+#       */
-/*   Updated: 2019/12/14 04:18:36 by rlegendr    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/12/17 16:45:57 by rlegendr    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -15,27 +15,23 @@
 
 using namespace std;
 
-void			SDL_init_window(t_sdl *sdl)
+void			SDL_init(t_sdl *sdl)
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) != 0)
 			failure_exit_program("Initialization SDL WINDOW", sdl);
-	SDL_get_desktop_display_mode(sdl, 0, &sdl->display);
-	sdl->disp = {0, 0, sdl->display.w, sdl->display.h};
-	if ((sdl->window = SDL_CreateWindow("Runner",
-			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, sdl->disp.w,
-			sdl->disp.h, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN)) == NULL)
+}
 
-/*	if ((sdl->window = SDL_CreateWindow("Runner",
-				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, sdl->disp.w,
-				sdl->disp.h, SDL_WINDOW_SHOWN)) == NULL)
-*//*	if ((sdl->window = SDL_CreateWindow("Runner",
-				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 720,
-				480, SDL_WINDOW_SHOWN)) == NULL)
-*/	failure_exit_program("Creating sdl->window", sdl);
-	while ((sdl->disp.w % 720) % 8 != 0)
-		sdl->disp.w--;
-	while ((sdl->disp.h % 480) % 8 != 0)
-		sdl->disp.h--;
+void			SDL_create_window(t_sdl *sdl, int width, int heigth)
+{
+	SDL_get_desktop_display_mode(sdl, 0, &sdl->display);
+	if (width == 0 && heigth == 0)
+		sdl->disp = {0, 0, sdl->display.w, sdl->display.h};
+	else
+		sdl->disp = {0, 0, width, heigth};
+	cout << "disp width = " << sdl->disp.w << " // disp height = " << sdl->disp.h << endl;
+	if ((sdl->window = SDL_CreateWindow("Runner",
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, sdl->disp.w, sdl->disp.h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)) == NULL)
+		failure_exit_program("Creating sdl->window", sdl);
 }
 
 void			SDL_init_renderer(t_sdl *sdl)

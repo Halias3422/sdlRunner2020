@@ -26,6 +26,9 @@ typedef struct		s_obstacle
 		int			box_collide;
 		SDL_Texture	*texture;
 		SDL_Rect	dst;
+		int			extra_horizontal_force;
+		int			extra_vertical_force;
+		int			ignore;
 }					t_obstacle;
 
 #endif

@@ -2,6 +2,8 @@
 #include <list>
 
 typedef struct s_obstacle	t_obstacle;
+class	Platform;
+extern int NB_IMG;
 
 class Player
 {
@@ -12,7 +14,7 @@ class Player
 void	reset_dst();
 void	fill_buffer(t_sdl *sdl);
 void	right();
-void	reborn();
+void	reborn(std::vector <t_obstacle> *platform, Platform obj_list[NB_IMG]);
 void	jump(int pressed);
 void	left();
 void	idle();
@@ -22,8 +24,8 @@ void	print_heart(t_sdl *sdl);
 void	menu_animation(t_sdl *sdl);
 void	set_life(int lifeuh);
 void	reset_last_boost();
-void	vertical_move(std::vector <t_obstacle> *platform);
-void	horizontal_move(int way, std::vector <t_obstacle> *platform);
+void	vertical_move(std::vector <t_obstacle> *platform, Platform obj_list[NB_IMG]);
+void	horizontal_move(int way, std::vector <t_obstacle> *platform, Platform obj_list[NB_IMG]);
 bool	is_alive();
 
 	~Player();
@@ -48,4 +50,6 @@ bool	is_alive();
 	int			menu_right = 0;
 	int			score = 0;
 	int			player_nb = 1;
+	int			extra_horizontal_force = 0;
+	int			extra_vertical_force = 0;
 };

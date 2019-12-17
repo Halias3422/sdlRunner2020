@@ -2,20 +2,62 @@
 
 using namespace std;
 
-void	print_obstacle(t_sdl *sdl, vector <t_obstacle> *platform)
+void	print_menu_option(t_sdl *sdl, SDL_Texture *menu_option, SDL_Texture *menu_check, SDL_Texture *img_arrow, int first_menu, int submenu)
 {
-	vector <t_obstacle>::iterator i;
+	SDL_Rect	dst_back = {0, 0, 720, 480};
+	SDL_Rect	dst_arrow = {12, 104 + 60 * (first_menu - 1), 36, 31};
+	SDL_Rect	dst_check = {0, 0, 23, 8};
 
-	for (i = platform->begin(); i != platform->end(); i++)
-	{
-		if (i->box_collide == 1)
-		{
-			SDL_render_copy(sdl, sdl->renderer, i->texture, NULL, &i->dst);
-		}
-	}
+	(void)dst_back;
+	(void)dst_check;
+	(void)menu_option;
+	(void)menu_check;
+	(void)first_menu;
+	SDL_render_clear(sdl, sdl->renderer);
+	SDL_render_target(sdl, sdl->renderer, sdl->buffer);
+	SDL_render_clear(sdl, sdl->renderer);
+
+	SDL_render_copy(sdl, sdl->renderer, menu_option, NULL, &dst_back);
+	if (first_menu == 6)
+		dst_arrow = {146, 429, 36, 31};
+	if (submenu == 0)
+		SDL_render_copy(sdl, sdl->renderer, img_arrow, NULL, &dst_arrow);
+	dst_check = {200 + 44 * LIFE_PLAYER_2, 130, 23, 8};
+	SDL_render_copy(sdl, sdl->renderer, menu_check, NULL, &dst_check);
+	dst_check = {155 + 43 * (LIFE_PLAYER - 1), 189, 23, 8};
+	SDL_render_copy(sdl, sdl->renderer, menu_check, NULL, &dst_check);
+	dst_check = {242 + 60 * DEATHMATCH, 250, 23, 8};
+	SDL_render_copy(sdl, sdl->renderer, menu_check, NULL, &dst_check);
+	dst_check = {188 + 43 * (BACKGROUND_SPEED - 1), 310, 23, 8};
+	SDL_render_copy(sdl, sdl->renderer, menu_check, NULL, &dst_check);
+	if (RESOLUTION == 1)
+		dst_check = {268, 370, 23, 8};
+	if (RESOLUTION == 2)
+		dst_check = {430, 370, 23, 8};
+	if (RESOLUTION == 3)
+		dst_check = {560, 370, 23, 8};
+	if (RESOLUTION == 4)
+		dst_check = {664, 370, 23, 8};
+	SDL_render_copy(sdl, sdl->renderer, menu_check, NULL, &dst_check);
+	SDL_render_target(sdl, sdl->renderer, NULL);
+	SDL_render_copy(sdl, sdl->renderer, sdl->buffer, NULL, NULL);
+	SDL_RenderPresent(sdl->renderer);
 }
 
-void	print_runner(t_sdl *sdl, Background *background, Background *front_background, Player *player, Player *player2, vector <t_obstacle> *platform, vector <SDL_Texture*> *score_texture)
+void	print_obstacle(t_sdl *sdl, vector <t_obstacle> *platform)
+{
+vector <t_obstacle>::iterator i;
+
+for (i = platform->begin(); i != platform->end(); i++)
+{
+	if (i->box_collide == 1)
+	{
+		SDL_render_copy(sdl, sdl->renderer, i->texture, NULL, &i->dst);
+	}
+}
+}
+
+void	print_runner(t_sdl *sdl, Background *background, Background *front_background, Player *player, Player *player2, vector <t_obstacle> *platform, vector <SDL_Texture*> *score_texture, Platform obj_list[NB_IMG])
 {
 	SDL_render_clear(sdl, sdl->renderer);
 	SDL_render_target(sdl, sdl->renderer, sdl->buffer);
@@ -23,10 +65,10 @@ void	print_runner(t_sdl *sdl, Background *background, Background *front_backgrou
 	
 	background->fillbuffer(sdl, "background");
 	front_background->fillbuffer(sdl, "front_background");
-	player->horizontal_move(0, platform);
-	player2->horizontal_move(0, platform);
-	player->vertical_move(platform);
-	player2->vertical_move(platform);
+	player->horizontal_move(0, platform, obj_list);
+	player2->horizontal_move(0, platform, obj_list);
+	player->vertical_move(platform, obj_list);
+	player2->vertical_move(platform, obj_list);
 
 	if (player->is_alive() == true)
 		player->fill_buffer(sdl);
@@ -77,12 +119,6 @@ void	print_score_menu(t_sdl *sdl)
 {
 	SDL_Texture	*loose(nullptr);
 	SDL_Rect	dst = {0, 0, 720, 480};
-
-	PLAYER_SPEED = 0;
-	BACKGROUND_SPEED = 0;
-	FRONT_BACKGROUND_SPEED = 0;
-	LVL_SPEED = 0;
-	PLAYER_VSPEED = 0;
 
 	SDL_render_target(sdl, sdl->renderer, sdl->buffer);
 	loose = SDL_load_texture(sdl, sdl->renderer, loose, "img/loose.png");

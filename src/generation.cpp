@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[NB_IMG], int type, int box_collide, int dst_x, int dst_y)
+void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[NB_IMG], int type, int box_collide, int dst_x, int dst_y, int	extra_horizontal_force, int extra_vertical_force, int ignore)
 {
 	new_obj->type = type;
 	new_obj->nb_obstacle = TOT_OBJ++;
@@ -11,6 +11,9 @@ void	fill_obstacle(t_obstacle *new_obj, Platform obj_list[NB_IMG], int type, int
 	new_obj->dst = obj_list[new_obj->type].get_dst();
 	new_obj->dst.x = dst_x;
 	new_obj->dst.y = dst_y;
+	new_obj->extra_horizontal_force = extra_horizontal_force;
+	new_obj->extra_vertical_force = extra_vertical_force;
+	new_obj->ignore = ignore;
 }
 
 void	create_lvl(t_sdl *sdl, vector <t_obstacle> *platform, Platform obj_list[NB_IMG])
@@ -21,19 +24,11 @@ void	create_lvl(t_sdl *sdl, vector <t_obstacle> *platform, Platform obj_list[NB_
 	(void)sdl;
 	while (i < 11)
 	{
-		fill_obstacle(&new_obj, obj_list, 0, 1, 72 * i, 460);
+		fill_obstacle(&new_obj, obj_list, 0, 1, 72 * i, 460, 0, 0, 0);
 		platform->push_back(new_obj);
 		i++;
 	}
-/*	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 2, 330);
-	platform->push_back(new_obj);
-	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 4, 200);
-	platform->push_back(new_obj);
-	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 6, 100);
-	platform->push_back(new_obj);
-	fill_obstacle(&new_obj, obj_list, 0, 1, 72 * 8, 200);
-	platform->push_back(new_obj);
-*/}
+}
 
 void	generation_only_ground(Platform obj_list[NB_IMG], vector <t_obstacle> *platform)
 {
@@ -47,20 +42,27 @@ void	generation_only_ground(Platform obj_list[NB_IMG], vector <t_obstacle> *plat
 	int			min;
 	int			type;
 
-	end--;
 	srand(time(NULL));
-	if (platform && begin->dst.x + begin->dst.w < 0)
+	while (begin->ignore == 1)
 	{
 		platform->erase(begin);
-		OBJ_DESTROYED += 1;
+		begin = platform->begin();
 	}
+	if (platform && begin->dst.x + begin->dst.w < 0)
+	{
+		OBJ_DESTROYED += 1;
+		platform->erase(begin);
+	}
+	end--;
+
 	while (platform && end->dst.x < 792)
 	{
 		box_collide = rand() % 100 < 100 - check_invisible_items ? 1 : 0;
-		while (end->box_collide == 0 || end->type == 2 || end->type == 3)
+		while (end->box_collide == 0 || end->type == 2 || end->type == 3 || end->ignore == 1)
 		{
 			end--;
-			nb_obj_impossible += 1;
+			if (end->ignore == 0)
+				nb_obj_impossible += 1;
 		}
 		if (box_collide == 1)
 			check_invisible_items += 20;
@@ -88,11 +90,13 @@ void	generation_only_ground(Platform obj_list[NB_IMG], vector <t_obstacle> *plat
 			altitude--;
 		end = platform->end();
 		end--;
+		while (end->ignore == 1)
+			end--;
 		if (rand() % 100 < 2)
 		{
 			for (int i = 0; i != 16; i++)
 			{
-				fill_obstacle(&new_plat, obj_list, rand() % 2, 1, end->dst.x + end->dst.w, altitude);
+				fill_obstacle(&new_plat, obj_list, rand() % 2, 1, end->dst.x + end->dst.w, altitude, 0, 0, 0);
 				platform->push_back(new_plat);
 				end = platform->end();
 				end--;
@@ -100,13 +104,15 @@ void	generation_only_ground(Platform obj_list[NB_IMG], vector <t_obstacle> *plat
 		}
 		else
 		{
-			fill_obstacle(&new_plat, obj_list, type, box_collide, end->dst.x + end->dst.w, altitude);
+			fill_obstacle(&new_plat, obj_list, type, box_collide, end->dst.x + end->dst.w, altitude, 0, 0, 0);
 			platform->push_back(new_plat);
 			end = platform->end();
 			end--;
+			while (end->ignore == 1)
+				end--;
 		}
 		nb_obj_impossible = 0;
 	}
 	for (begin = platform->begin(); begin != platform->end(); begin++)
-		begin->dst.x -= BACKGROUND_SPEED;
+		begin->dst.x -= BACKGROUND_SPEED + begin->extra_horizontal_force;
 }
