@@ -52,4 +52,5 @@ bool	is_alive();
 	int			player_nb = 1;
 	int			extra_horizontal_force = 0;
 	int			extra_vertical_force = 0;
+	int			direction = 1;
 };

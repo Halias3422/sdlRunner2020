@@ -6,7 +6,7 @@
 /*   By: rlegendr <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/12/17 14:44:37 by rlegendr     #+#   ##    ##    #+#       */
-/*   Updated: 2019/12/17 17:08:10 by rlegendr    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/12/18 10:35:26 by rlegendr    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -23,8 +23,8 @@ int		PLAYER_VSPEED = -16;
 int		TOT_OBJ = 0;
 int		NB_IMG = 4;
 int		OBJ_DESTROYED = 0;
-int		LIFE_PLAYER = 1;
-int		LIFE_PLAYER_2 = 1;
+int		LIFE_PLAYER = 3;
+int		LIFE_PLAYER_2 = 0;
 int		DEATHMATCH = 1;
 int		RESOLUTION = 4;
 int		SAVED_BACKGROUND_SPEED = BACKGROUND_SPEED;
