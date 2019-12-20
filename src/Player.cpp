@@ -223,6 +223,55 @@ void	Player::vertical_move(vector <t_obstacle> *platform, Platform obj_list[NB_I
 			reborn(platform, obj_list);
 	}
 }
+/*
+	for (i = platform->begin(); i != platform->end(); i++)
+	{
+		plat_dst = i->dst;
+		if (i->box_collide == 1 && ((PLAYER_Y < OBJ_Y && PLAYER_END_Y > OBJ_Y) || (PLAYER_Y < OBJ_END_Y && PLAYER_Y > OBJ_Y) ||
+					(PLAYER_END_Y > OBJ_Y && PLAYER_END_Y < OBJ_END_Y))) //if control pb vertical
+		{
+			if (PLAYER_X > OBJ_X && PLAYER_X < OBJ_END_X) //if control gauche joueur
+			{
+				PLAYER_X = OBJ_END_X;
+			}
+			if (PLAYER_END_X > OBJ_X && PLAYER_END_X < OBJ_END_X) //if control droite joueur
+			{
+				PLAYER_X = OBJ_X - PLAYER_WIDTH;
+			}
+		}
+	for (i = platform->begin(); i != platform->end(); i++)
+	{
+		plat_dst = i->dst;
+		if (i->box_collide == 1 && ((PLAYER_X < OBJ_X && PLAYER_END_X > OBJ_X) || (PLAYER_X < OBJ_END_X && PLAYER_X > OBJ_X) ||
+					(PLAYER_END_X > OBJ_X && PLAYER_END_X < OBJ_END_X))) //if control pb vertical
+		{
+			if (PLAYER_Y >= OBJ_Y && PLAYER_Y <= OBJ_END_Y && ++check) //if control gauche joueur
+			{
+				PLAYER_Y = OBJ_END_Y;
+			}
+			if (PLAYER_END_Y >= OBJ_Y && PLAYER_END_Y <= OBJ_END_Y && ++check) //if control droite joueur
+			{
+				PLAYER_Y = OBJ_Y - PLAYER_HEIGHT;
+				if (i->type == 2 || i->type == 3)
+				{
+					life -= 1;
+					if (life > 0)
+						reborn(platform, obj_list);
+				}
+				grounded = true;
+				started_jump = 0;
+				vspeed = 0;
+			}
+		}
+	}
+	if (check == 0)
+	{
+		extra_horizontal_force = 0;
+		last_boost = 0;
+		grounded = false;
+	}
+
+*/
 
 void	Player::left()
 {
@@ -288,6 +337,8 @@ void	Player::print_score(t_sdl *sdl, vector <SDL_Texture*> *score_texture)
 	string		score_tot;
 	int			length;
 
+	if (LIFE_PLAYER_2 == 0 && player_nb == 2)
+		return ;
 	score_tot = to_string(score);
 	length = score_tot.length() - 1;
 	if (player_nb == 2)
